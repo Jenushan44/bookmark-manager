@@ -1,14 +1,27 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from fastapi import FastAPI
+from database import SessionLocal
+from schemas import BookmarkCreate
+from models import Bookmark
 
-DATABASE_URL = "postgresql://postgres:YOUR_PASSWORD@localhost/bookmark_manager"
+app = FastAPI()
 
-engine = create_engine(DATABASE_URL)
+@app.get("/")
+def home(): 
+  return {"message": "/"}
 
-SessionLocal = sessionmaker(
-    autocommit=False,
-    autoflush=False,
-    bind=engine
-)
+@app.post("/bookmarks")
+def add_bookmark(bookmark: BookmarkCreate): 
+  db = SessionLocal()
 
-Base = declarative_base()
+  new_bookmark = Bookmark(
+    title = bookmark.title, 
+    url = bookmark.url, 
+    category = bookmark.category, 
+    description = bookmark.description,
+  )
+
+  db.add(new_bookmark)
+  db.commit()
+  db.close()
+
+  return new_bookmark
