@@ -11,3 +11,4 @@ class Bookmark(Base):
   url = Column(String, nullable=False)
   date = Column(DateTime, default=datetime.utcnow)
   category = Column(String, default="Other", nullable=False)
+  description = Column(String, nullable=True)

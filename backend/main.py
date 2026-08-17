@@ -1,7 +1,9 @@
 from fastapi import FastAPI
-from database import SessionLocal
 from schemas import BookmarkCreate
 from models import Bookmark
+from database import SessionLocal, Base, engine
+
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
@@ -25,3 +27,13 @@ def add_bookmark(bookmark: BookmarkCreate):
   db.close()
 
   return new_bookmark
+
+@app.get("/bookmarks")
+def get_bookmarks(): 
+  db = SessionLocal()
+
+  bookmarks = db.query(Bookmark).all()
+
+  db.close()
+
+  return bookmarks
