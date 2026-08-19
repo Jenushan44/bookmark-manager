@@ -37,3 +37,17 @@ def get_bookmarks():
   db.close()
 
   return bookmarks
+
+@app.get("/bookmarks/{bookmark_id}")
+def get_bookmark_by_id(bookmark_id: int): 
+  db = SessionLocal()
+
+  bookmark = db.query(Bookmark).filter(Bookmark.id == bookmark_id).first()
+
+  db.close()
+
+  if bookmark == None: 
+    return "Error: Bookmark not found"
+
+  return bookmark
+  
