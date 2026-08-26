@@ -50,4 +50,23 @@ def get_bookmark_by_id(bookmark_id: int):
     return "Error: Bookmark not found"
 
   return bookmark
+
+@app.delete("/bookmarks/{bookmark_id}")
+def delete_bookmark_by_id(bookmark_id: int): 
+  db = SessionLocal()
+
+  bookmark = db.query(Bookmark).filter(Bookmark.id == bookmark_id).first()
+
+  if bookmark == None: 
+    db.close()
+    return {"error": "Bookmark not found"}
+
+  db.delete(bookmark)
+
+  db.commit()
+  db.close()
+
+  
+
+  return {"message": "Bookmark successfully deleted"}
   
