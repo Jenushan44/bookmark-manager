@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from schemas import BookmarkCreate
+from schemas import BookmarkCreate, BookmarkUpdate
 from models import Bookmark
 from database import SessionLocal, Base, engine
 
@@ -69,4 +69,32 @@ def delete_bookmark_by_id(bookmark_id: int):
   
 
   return {"message": "Bookmark successfully deleted"}
-  
+
+@app.patch("/bookmarks/{bookmark_id}")
+def update_bookmark_by_id(bookmark_id: int, updates: BookmarkUpdate): 
+  db = SessionLocal()
+
+  bookmark = db.query(Bookmark).filter(Bookmark.id == bookmark_id).first()
+
+  if bookmark is None: 
+    db.close()
+    return {"error": "Bookmark not found"}
+
+  if updates.title is not None: 
+    bookmark.title = updates.title
+
+  if updates.url is not None:
+    bookmark.url = updates.url
+
+  if updates.category is not None:
+      bookmark.category = updates.category
+
+  if updates.description is not None:
+      bookmark.description = updates.description
+
+  db.commit()
+  db.refresh(bookmark)
+  db.close()
+
+  return bookmark
+    

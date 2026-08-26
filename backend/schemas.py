@@ -19,3 +19,9 @@ class BookmarkResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+class BookmarkUpdate(BaseModel): 
+    title: str | None = None 
+    url: str | None = None 
+    category: str | None = None
+    description: str | None = None
