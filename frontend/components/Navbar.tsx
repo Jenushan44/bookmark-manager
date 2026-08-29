@@ -1,18 +1,8 @@
-import {
-  House,
-  ListSortAscending,
-  Code2,
-  ShieldCheck,
-  GraduationCap,
-  BriefcaseBusiness,
-  Film,
-  Folder,
-  Plus
-} from "lucide-react";
+import { House, Bookmark, ListSortAscending, Code2, ShieldCheck, GraduationCap, BriefcaseBusiness, Film, Folder, Plus } from "lucide-react";
 
 export default function Navbar() {
   return (
-    <div className="w-[275px] min-h-screen bg-[#0a111d] p-4">
+    <div className="w-[275px] min-h-screen bg-[#0a111d] p-4 border-r-1 border-gray-800">
 
       <div className="mb-8 px-2">
         <div className="flex items-center gap-3">
@@ -28,7 +18,7 @@ export default function Navbar() {
       </div>
 
       <button className="group cursor-pointer flex items-center w-full gap-4 mt-2 px-4 py-3 rounded-lg hover:bg-[#1c2038] transition-all duration-300">
-        <House size={20} className="text-[#7c7ff2] group-hover:text-[#9a9cff] transition-colors duration-300" />
+        <House size={20} className="text-gray-500 group-hover:text-[#9a9cff] transition-colors duration-300" />
         <p className="text-gray-400 group-hover:text-[#e0d3f3] transition-colors duration-300">All Bookmarks</p>
         <p className="ml-auto w-7 h-7 flex items-center justify-center rounded-full border border-gray-700 group-hover:border-gray-500 border-1 text-gray-500 group-hover:text-[#e0d3f3] text-[#c8b8e8] group-hover:bg-[#252a48] transition-all duration-300">0</p>
       </button>
