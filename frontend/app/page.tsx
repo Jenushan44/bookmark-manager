@@ -1,7 +1,26 @@
+"use client"
 import { Bookmark, Search, Plus } from "lucide-react"
 import Navbar from "../components/Navbar"
+import { useState, useEffect } from 'react';
+
+type BookmarkType = {
+  id: number;
+  title: string | null;
+  url: string;
+  category: string;
+  description: string | null;
+};
 
 export default function Home() {
+  const [bookmarks, setBookmarks] = useState<BookmarkType[]>([]);
+
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/bookmarks")
+      .then((response) => response.json())
+      .then((data) => setBookmarks(data));
+  }, []);
+
+
   return (
     <div className="flex min-h-screen bg-[#0f1621]">
       <Navbar />
@@ -33,6 +52,12 @@ export default function Home() {
             <p className="text-gray-400 font-semibold">0 bookmarks</p>
           </div>
 
+        </div>
+
+        <div>
+          {bookmarks.map((bookmark) => (
+            <p key={bookmark.id}>Test</p>
+          ))}
         </div>
       </div>
     </div>
