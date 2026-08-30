@@ -55,7 +55,7 @@ export default function Home() {
 
         </div>
 
-        <div>
+        <div className="flex gap-3 mt-5">
           {bookmarks.map((bookmark) => (
             <div key={bookmark.id}>
               <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} />
