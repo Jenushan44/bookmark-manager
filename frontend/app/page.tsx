@@ -1,6 +1,7 @@
 "use client"
 import { Bookmark, Search, Plus } from "lucide-react"
 import Navbar from "../components/Navbar"
+import BookmarkCard from "../components/BookmarkCard"
 import { useState, useEffect } from 'react';
 
 type BookmarkType = {
@@ -56,7 +57,9 @@ export default function Home() {
 
         <div>
           {bookmarks.map((bookmark) => (
-            <p key={bookmark.id}>Test</p>
+            <div key={bookmark.id}>
+              <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} />
+            </div>
           ))}
         </div>
       </div>
