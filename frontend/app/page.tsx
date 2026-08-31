@@ -14,6 +14,7 @@ type BookmarkType = {
 
 export default function Home() {
   const [bookmarks, setBookmarks] = useState<BookmarkType[]>([]);
+  const [isAddOpen, setIsAddOpen] = useState(false);
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/bookmarks")
@@ -33,7 +34,7 @@ export default function Home() {
             <p className="mt-2 ml-14 text-gray-600">Save and organize useful links.</p>
           </div>
 
-          <button className="ml-auto flex items-center gap-2 rounded-md border border-[#5e54e0] bg-[#5e54e0] px-4 py-2 h-[50px] cursor-pointer"><Plus /> Add Bookmark</button>
+          <button onClick={() => setIsAddOpen(true)} className="ml-auto flex items-center gap-2 rounded-md border border-[#5e54e0] bg-[#5e54e0] px-4 py-2 h-[50px] cursor-pointer"><Plus />Add Bookmark</button>
         </div>
 
 
@@ -63,6 +64,16 @@ export default function Home() {
           ))}
         </div>
       </div>
+      {isAddOpen && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
+          <div className="bg-[#121a25] border border-gray-700 rounded-lg p-6 w-[400px]">
+            <p className="text-xl font-semibold">Add Bookmark</p>
+            <button onClick={() => setIsAddOpen(false)} className="mt-5 border border-gray-600 rounded-md px-4 py-2">Close</button>
+          </div>
+        </div>
+      )}
+
+
     </div>
   );
 }
