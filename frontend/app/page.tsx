@@ -15,12 +15,26 @@ type BookmarkType = {
 export default function Home() {
   const [bookmarks, setBookmarks] = useState<BookmarkType[]>([]);
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [url, setUrl] = useState("");
+  const [category, setCategory] = useState("Work");
+  const [description, setDescription] = useState("");
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/bookmarks")
       .then((response) => response.json())
       .then((data) => setBookmarks(data));
   }, []);
+
+  const addBookmark = () => {
+    fetch("http://127.0.0.1:8000/bookmarks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", },
+      body: JSON.stringify({ title: title || null, url: url, category: category, description: description || null, }),
+    })
+      .then((response) => response.json())
+      .then((newBookmark) => { setBookmarks([...bookmarks, newBookmark]); setTitle(""); setUrl(""); setCategory("Work"); setDescription(""); setIsAddOpen(false); });
+  };
 
 
   return (
@@ -73,18 +87,18 @@ export default function Home() {
               <p>Title</p>
               <p className="text-gray-400">(Optional)</p>
             </div>
-            <input className="mt-2 border-1 border-gray-500 rounded-md p-1 pl-2" placeholder="e.g. FastAPI Docs" />
+            <input value={title} onChange={(event) => setTitle(event.target.value)} className="mt-2 border-1 border-gray-500 rounded-md p-1 pl-2" placeholder="e.g. FastAPI Docs" />
 
             <div className="mt-5 flex gap-1">
               <p>URL</p>
               <p className="text-red-800">*</p>
             </div>
-            <input className="mt-2 border-1 border-gray-500 rounded-md p-1 pl-2" placeholder="https://example.com" />
+            <input value={url} onChange={(event) => setUrl(event.target.value)} className="mt-2 border-1 border-gray-500 rounded-md p-1 pl-2" placeholder="https://example.com" />
 
             <div className="mt-5 flex gap-1">
               <p>Category</p>
             </div>
-            <select className="mt-2 border-1 border-gray-500 rounded-md p-1 pl-2 pr-2 cursor-pointer">
+            <select value={category} onChange={(event) => setCategory(event.target.value)} className="mt-2 border-1 border-gray-500 rounded-md p-1 pl-2 pr-2 cursor-pointer">
               <option className="bg-[#121a25] cursor-pointer">Work</option>
               <option className="bg-[#121a25] cursor-pointer">Education</option>
               <option className="bg-[#121a25] cursor-pointer">Technology</option>
@@ -103,11 +117,11 @@ export default function Home() {
               <p>Description</p>
               <p className="text-gray-400">(Optional)</p>
             </div>
-            <textarea className="mt-2 border-1 border-gray-500 rounded-md p-1 pl-2 h-40" placeholder="Add a short description..." />
+            <textarea value={description} onChange={(event) => setDescription(event.target.value)} className="mt-2 border-1 border-gray-500 rounded-md p-1 pl-2 h-40" placeholder="Add a short description..." />
 
             <div className="flex ml-auto gap-3">
               <button onClick={() => setIsAddOpen(false)} className="mt-5 border border-gray-600 rounded-md px-4 py-2 cursor-pointer hover:bg-red-600 transition-colors font-medium">Close</button>
-              <button onClick={() => setIsAddOpen(false)} className="mt-5 border border-gray-600 rounded-md px-4 py-2 cursor-pointer bg-[#5e54e0] transition-colors font-medium">Add Bookmark</button>
+              <button onClick={addBookmark} className="mt-5 border border-gray-600 rounded-md px-4 py-2 cursor-pointer bg-[#5e54e0] transition-colors font-medium">Add Bookmark</button>
             </div>
           </div>
         </div>
