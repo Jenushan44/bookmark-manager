@@ -66,9 +66,49 @@ export default function Home() {
       </div>
       {isAddOpen && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
-          <div className="bg-[#121a25] border border-gray-700 rounded-lg p-6 w-[400px]">
+          <div className="bg-[#121a25] border border-gray-700 rounded-lg p-6 w-[400px] flex flex-col">
             <p className="text-xl font-semibold">Add Bookmark</p>
-            <button onClick={() => setIsAddOpen(false)} className="mt-5 border border-gray-600 rounded-md px-4 py-2">Close</button>
+            <hr className="mt-1" />
+            <div className="mt-5 flex gap-1">
+              <p>Title</p>
+              <p className="text-gray-400">(Optional)</p>
+            </div>
+            <input className="mt-2 border-1 border-gray-500 rounded-md p-1 pl-2" placeholder="e.g. FastAPI Docs" />
+
+            <div className="mt-5 flex gap-1">
+              <p>URL</p>
+              <p className="text-red-800">*</p>
+            </div>
+            <input className="mt-2 border-1 border-gray-500 rounded-md p-1 pl-2" placeholder="https://example.com" />
+
+            <div className="mt-5 flex gap-1">
+              <p>Category</p>
+            </div>
+            <select className="mt-2 border-1 border-gray-500 rounded-md p-1 pl-2 pr-2 cursor-pointer">
+              <option className="bg-[#121a25] cursor-pointer">Work</option>
+              <option className="bg-[#121a25] cursor-pointer">Education</option>
+              <option className="bg-[#121a25] cursor-pointer">Technology</option>
+              <option className="bg-[#121a25] cursor-pointer">News</option>
+              <option className="bg-[#121a25] cursor-pointer">Entertainment</option>
+              <option className="bg-[#121a25] cursor-pointer">Shopping</option>
+              <option className="bg-[#121a25] cursor-pointer">Finance</option>
+              <option className="bg-[#121a25] cursor-pointer">Health</option>
+              <option className="bg-[#121a25] cursor-pointer">Travel</option>
+              <option className="bg-[#121a25] cursor-pointer">Social</option>
+              <option className="bg-[#121a25] cursor-pointer">Reference</option>
+              <option className="bg-[#121a25] cursor-pointer">Other</option>
+            </select>
+
+            <div className="mt-5 flex gap-1">
+              <p>Description</p>
+              <p className="text-gray-400">(Optional)</p>
+            </div>
+            <textarea className="mt-2 border-1 border-gray-500 rounded-md p-1 pl-2 h-40" placeholder="Add a short description..." />
+
+            <div className="flex ml-auto gap-3">
+              <button onClick={() => setIsAddOpen(false)} className="mt-5 border border-gray-600 rounded-md px-4 py-2 cursor-pointer hover:bg-red-600 transition-colors font-medium">Close</button>
+              <button onClick={() => setIsAddOpen(false)} className="mt-5 border border-gray-600 rounded-md px-4 py-2 cursor-pointer bg-[#5e54e0] transition-colors font-medium">Add Bookmark</button>
+            </div>
           </div>
         </div>
       )}
