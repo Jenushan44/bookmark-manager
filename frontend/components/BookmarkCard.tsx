@@ -6,9 +6,10 @@ type BookmarkCardProps = {
   url: string;
   category: string;
   description: string | null;
+  deleteBookmark: (id: number) => void;
 };
 
-export default function BookmarkCard({ id, title, url, category, description }: BookmarkCardProps) {
+export default function BookmarkCard({ id, title, url, category, description, deleteBookmark }: BookmarkCardProps) {
 
   const website = new URL(url);
   const favicon = `https://www.google.com/s2/favicons?domain=${website.hostname}&sz=64`;
@@ -35,7 +36,7 @@ export default function BookmarkCard({ id, title, url, category, description }: 
         <p className='flex gap-2'><CalendarDays /> August 30, 2026</p>
         <div className='ml-auto mr-5'>
           <button className='p-2 rounded-md border border-gray-600 text-gray-300 hover:border-gray-300 hover:bg-gray-800 hover:text-white transition-colors cursor-pointer'><Pencil /></button>
-          <button className='p-2 rounded-md border border-gray-600 text-gray-300 hover:border-red-500 hover:bg-red-500/10 hover:text-red-500 transition-colors ml-2 cursor-pointer'><Trash2 className='text-red-700' /></button>
+          <button onClick={() => deleteBookmark(id)} className='p-2 rounded-md border border-gray-600 text-gray-300 hover:border-red-500 hover:bg-red-500/10 hover:text-red-500 transition-colors ml-2 cursor-pointer'><Trash2 className='text-red-700' /></button>
         </div>
       </div>
     </div>

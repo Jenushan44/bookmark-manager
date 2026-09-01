@@ -37,6 +37,11 @@ export default function Home() {
   };
 
 
+  const deleteBookmark = (id: number) => {
+    fetch(`http://127.0.0.1:8000/bookmarks/${id}`, { method: "DELETE", }).then(() => { setBookmarks(bookmarks.filter((bookmark) => bookmark.id !== id)); });
+  };
+
+
   return (
     <div className="flex min-h-screen bg-[#0f1621]">
       <Navbar />
@@ -73,7 +78,7 @@ export default function Home() {
         <div className="flex gap-3 mt-5">
           {bookmarks.map((bookmark) => (
             <div key={bookmark.id}>
-              <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} />
+              <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} deleteBookmark={deleteBookmark} />
             </div>
           ))}
         </div>
