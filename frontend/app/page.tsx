@@ -1,5 +1,5 @@
 "use client"
-import { Bookmark, Search, Plus } from "lucide-react"
+import { Bookmark, Search, Plus, Info, Pencil, Trash2 } from "lucide-react"
 import Navbar from "../components/Navbar"
 import BookmarkCard from "../components/BookmarkCard"
 import { useState, useEffect } from 'react';
@@ -22,6 +22,10 @@ export default function Home() {
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
+
+  const [selectedBookmark, setSelectedBookmark] = useState<BookmarkType | null>(null);
+  const [isInfoOpen, setIsInfoOpen] = useState(false);
+
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/bookmarks")
@@ -65,11 +69,13 @@ export default function Home() {
 
         setIsEditOpen(false);
         setEditingId(null);
-
-
       });
   };
 
+  const openInfoModal = (bookmark: BookmarkType) => {
+    setSelectedBookmark(bookmark);
+    setIsInfoOpen(true);
+  };
 
   return (
     <div className="flex min-h-screen bg-[#0f1621]">
@@ -107,7 +113,7 @@ export default function Home() {
         <div className="flex gap-3 mt-5">
           {bookmarks.map((bookmark) => (
             <div key={bookmark.id}>
-              <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} deleteBookmark={deleteBookmark} openEditModal={() => openEditModal(bookmark)} />
+              <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} deleteBookmark={deleteBookmark} openEditModal={() => openEditModal(bookmark)} openInfoModal={() => openInfoModal(bookmark)} />
             </div>
           ))}
         </div>
@@ -220,6 +226,44 @@ export default function Home() {
               </button>
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {isInfoOpen && selectedBookmark && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
+          <div className="bg-[#121a25] border border-gray-700 rounded-lg p-6 w-[400px] flex flex-col">
+            <p className="text-xl font-semibold">Info Bookmark</p>
+            <hr className="mt-1" />
+            <div className="flex items-center gap-4 mt-5">
+              <img src={`https://www.google.com/s2/favicons?domain=${new URL(selectedBookmark.url).hostname}&sz=64`} className="w-12 h-12" />
+
+              <div>
+                <p className="text-lg font-semibold">{selectedBookmark.title || "Untitled"}</p>
+                <p className="text-sm text-gray-400">{new URL(selectedBookmark.url).hostname}</p>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <p className="text-sm text-gray-400">URL</p>
+              <a href={selectedBookmark.url} target="_blank" className="text-[#8177ff] hover:underline">{selectedBookmark.url}</a>
+            </div>
+
+            <div className="mt-5">
+              <p className="text-sm text-gray-400">Category</p>
+              <p className="mt-1">{selectedBookmark.category}</p>
+            </div>
+
+            <div className="mt-5">
+              <p className="text-sm text-gray-400">Description</p>
+              <p className="mt-1 text-gray-200">{selectedBookmark.description || "No description added."}</p>
+            </div>
+
+            <div className="flex gap-2 mx-auto mt-5 w-full">
+              <button onClick={() => { setIsInfoOpen(false); openEditModal(selectedBookmark); }} className='z-50 p-2 rounded-md border border-gray-600 text-gray-300 hover:border-gray-300 w-1/2 hover:bg-gray-800 hover:text-white transition-colors cursor-pointer flex gap-2 text-lg font-semibold items-center justify-center'>Edit<Pencil size={20} /></button>
+              <button onClick={(event) => { event.preventDefault(); event.stopPropagation(); setIsInfoOpen(false); deleteBookmark(selectedBookmark.id); }} className='z-20 p-2 rounded-md border border-gray-600 text-gray-300 hover:border-red-500 hover:bg-red-500/10 hover:text-red-500 transition-colors ml-2 cursor-pointer w-1/2 flex gap-2 text-lg font-semibold items-center justify-center'>Delete<Trash2 className='text-red-700' /></button>
+            </div>
+            <button onClick={() => setIsInfoOpen(false)} className="mt-5 border border-gray-600 rounded-md px-4 py-2 w-1/2 mx-auto w-full cursor-pointer font-semibold hover:bg-[#5e54e0] transition-colors">Close</button>
           </div>
         </div>
       )}

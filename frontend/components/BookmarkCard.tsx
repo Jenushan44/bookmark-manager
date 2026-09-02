@@ -1,4 +1,4 @@
-import { CalendarDays, Pencil, Trash2 } from 'lucide-react';
+import { CalendarDays, Pencil, Trash2, Info } from 'lucide-react';
 
 type BookmarkCardProps = {
   id: number;
@@ -8,9 +8,10 @@ type BookmarkCardProps = {
   description: string | null;
   deleteBookmark: (id: number) => void;
   openEditModal: () => void;
+  openInfoModal: () => void;
 };
 
-export default function BookmarkCard({ id, title, url, category, description, deleteBookmark, openEditModal }: BookmarkCardProps) {
+export default function BookmarkCard({ id, title, url, category, description, deleteBookmark, openEditModal, openInfoModal }: BookmarkCardProps) {
 
   const website = new URL(url);
   const favicon = `https://www.google.com/s2/favicons?domain=${website.hostname}&sz=64`;
@@ -37,8 +38,7 @@ export default function BookmarkCard({ id, title, url, category, description, de
       <div className='ml-5 mt-3 mb-3 flex items-center'>
         <p className='flex gap-2'><CalendarDays /> August 30, 2026</p>
         <div className='z-20 ml-auto mr-5'>
-          <button onClick={openEditModal} className='z-50 p-2 rounded-md border border-gray-600 text-gray-300 hover:border-gray-300 hover:bg-gray-800 hover:text-white transition-colors cursor-pointer'><Pencil /></button>
-          <button onClick={(event) => { event.preventDefault(); event.stopPropagation(); deleteBookmark(id) }} className='z-20 p-2 rounded-md border border-gray-600 text-gray-300 hover:border-red-500 hover:bg-red-500/10 hover:text-red-500 transition-colors ml-2 cursor-pointer'><Trash2 className='text-red-700' /></button>
+          <button onClick={openInfoModal} className="text-blue-400 mt-5 px-4 py-2 cursor-pointer hover:text-blue-500 transition-colors hover:scale-105 hover:shadow-xl"><Info /></button>
         </div>
       </div>
 
