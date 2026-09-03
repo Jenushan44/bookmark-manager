@@ -1,6 +1,15 @@
 import { House, Star, Clock, Bookmark, ListSortAscending, Code2, ShieldCheck, GraduationCap, BriefcaseBusiness, Film, Folder, Plus } from "lucide-react";
 
-export default function Navbar() {
+type NavbarProps = {
+  showAllBookmarks: () => void;
+  bookmarkCount: number;
+  showUncategorizedBookmarks: () => void;
+  showCategorizedBookmarks: () => void;
+};
+
+export default function Navbar({ showAllBookmarks, bookmarkCount, showUncategorizedBookmarks, showCategorizedBookmarks }: NavbarProps) {
+
+
   return (
     <div className="w-[275px] min-h-screen bg-[#0a111d] p-4 border-r-1 border-gray-800">
 
@@ -17,10 +26,10 @@ export default function Navbar() {
         </div>
       </div>
 
-      <button className="group cursor-pointer flex items-center w-full gap-4 mt-2 px-4 py-3 rounded-lg hover:bg-[#1c2038] transition-all duration-300">
+      <button onClick={showAllBookmarks} className="group cursor-pointer flex items-center w-full gap-4 mt-2 px-4 py-3 rounded-lg hover:bg-[#1c2038] transition-all duration-300">
         <House size={20} className="text-gray-500 group-hover:text-[#9a9cff] transition-colors duration-300" />
         <p className="text-gray-400 group-hover:text-[#e0d3f3] transition-colors duration-300">All Bookmarks</p>
-        <p className="ml-auto w-7 h-7 flex items-center justify-center rounded-full border border-gray-700 group-hover:border-gray-500 border-1 text-gray-500 group-hover:text-[#e0d3f3] text-[#c8b8e8] group-hover:bg-[#252a48] transition-all duration-300">0</p>
+        <p className="ml-auto w-7 h-7 flex items-center justify-center rounded-full border border-gray-700 group-hover:border-gray-500 border-1 text-gray-500 group-hover:text-[#e0d3f3] text-[#c8b8e8] group-hover:bg-[#252a48] transition-all duration-300">{bookmarkCount}</p>
       </button>
 
       <div className="flex items-center justify-between mt-8 px-4">
@@ -53,13 +62,13 @@ export default function Navbar() {
         </button>
       </div>
 
-      <button className="group flex cursor-pointer items-center w-full gap-4 mt-3 px-4 py-3 rounded-lg hover:bg-[#1c2038] transition-all duration-300">
+      <button onClick={showCategorizedBookmarks} className="group flex cursor-pointer items-center w-full gap-4 mt-3 px-4 py-3 rounded-lg hover:bg-[#1c2038] transition-all duration-300">
         <ListSortAscending size={19} className="text-gray-500 group-hover:text-[#9a9cff] transition-colors duration-300" />
         <p className="text-gray-400 group-hover:text-white transition-colors duration-300">Categorized</p>
         <p className="ml-auto w-7 h-7 flex items-center justify-center rounded-full border border-gray-700 group-hover:border-gray-500 border-1 text-gray-500 group-hover:text-[#e0d3f3] text-[#c8b8e8] group-hover:bg-[#252a48] transition-all duration-300">0</p>
       </button>
 
-      <button className="group flex items-center cursor-pointer w-full gap-4 px-4 py-3 rounded-lg hover:bg-[#1c2038] transition-all duration-300">
+      <button onClick={showUncategorizedBookmarks} className="group flex items-center cursor-pointer w-full gap-4 px-4 py-3 rounded-lg hover:bg-[#1c2038] transition-all duration-300">
         <ListSortAscending size={19} className="text-gray-500 group-hover:text-[#9a9cff] transition-colors duration-300" />
         <p className="text-gray-400 group-hover:text-white transition-colors duration-300">Uncategorized</p>
         <p className="ml-auto w-7 h-7 flex items-center justify-center rounded-full border border-gray-700 group-hover:border-gray-500 border-1 text-gray-500 group-hover:text-[#e0d3f3] text-[#c8b8e8] group-hover:bg-[#252a48] transition-all duration-300">0</p>

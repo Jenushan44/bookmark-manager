@@ -80,15 +80,26 @@ export default function Home() {
   };
 
   const filteredBookmarks = bookmarks.filter((bookmark) => {
-    const matchesSearch = bookmark.title?.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = selectedCategory === "All Categories" || bookmark.category === selectedCategory;
+    const matchesSearch = (bookmark.title || "").toLowerCase().includes(search.toLowerCase());
+
+    let matchesCategory;
+
+    if (selectedCategory === "All Categories") {
+      matchesCategory = true;
+    } else if (selectedCategory === "Categorized") {
+      matchesCategory = bookmark.category !== "Other";
+    } else {
+      matchesCategory = bookmark.category === selectedCategory;
+    }
+
 
     return matchesSearch && matchesCategory;
+
   });
 
   return (
     <div className="flex min-h-screen bg-[#0f1621]">
-      <Navbar />
+      <Navbar showAllBookmarks={() => setSelectedCategory("All Categories")} bookmarkCount={bookmarks.length} showUncategorizedBookmarks={() => setSelectedCategory("Other")} showCategorizedBookmarks={() => setSelectedCategory("Categorized")} />
       <div className="flex-1 p-8 bg-[#090f18]">
 
         <div className="flex">
@@ -99,7 +110,6 @@ export default function Home() {
 
           <button onClick={() => setIsAddOpen(true)} className="ml-auto flex items-center gap-2 rounded-md border border-[#5e54e0] bg-[#5e54e0] px-4 py-2 h-[50px] cursor-pointer"><Plus />Add Bookmark</button>
         </div>
-
 
         <div className="flex items-center gap-5">
           <div className="mt-8 flex items-center border-1 rounded-md border-gray-800 p-1 pl-2 py-2 w-1/3 gap-2">
