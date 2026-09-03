@@ -26,6 +26,7 @@ export default function Home() {
   const [selectedBookmark, setSelectedBookmark] = useState<BookmarkType | null>(null);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/bookmarks")
@@ -77,6 +78,10 @@ export default function Home() {
     setIsInfoOpen(true);
   };
 
+  const filteredBookmarks = bookmarks.filter((bookmark) => {
+    return bookmark.title?.toLowerCase().includes(search.toLowerCase());
+  });
+
   return (
     <div className="flex min-h-screen bg-[#0f1621]">
       <Navbar />
@@ -95,7 +100,7 @@ export default function Home() {
         <div className="flex items-center gap-5">
           <div className="mt-8 flex items-center border-1 rounded-md border-gray-800 p-1 pl-2 py-2 w-1/3 gap-2">
             <Search size={18} />
-            <input className="w-full outline-none" placeholder="Search bookmarks..." />
+            <input value={search} onChange={(event) => setSearch(event.target.value)} className="w-full outline-none" placeholder="Search bookmarks..." />
           </div>
 
           <div className="mt-8 border-gray-800 border-1 rounded-md p-1 pl-2 py-2 w-1/5 bg-[#121a25]">
@@ -111,7 +116,7 @@ export default function Home() {
         </div>
 
         <div className="flex gap-4 mt-5">
-          {bookmarks.map((bookmark) => (
+          {filteredBookmarks.map((bookmark) => (
             <div key={bookmark.id}>
               <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} deleteBookmark={deleteBookmark} openEditModal={() => openEditModal(bookmark)} openInfoModal={() => openInfoModal(bookmark)} />
             </div>
