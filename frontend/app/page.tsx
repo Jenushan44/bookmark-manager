@@ -27,6 +27,7 @@ export default function Home() {
   const [isInfoOpen, setIsInfoOpen] = useState(false);
 
   const [search, setSearch] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/bookmarks")
@@ -79,7 +80,10 @@ export default function Home() {
   };
 
   const filteredBookmarks = bookmarks.filter((bookmark) => {
-    return bookmark.title?.toLowerCase().includes(search.toLowerCase());
+    const matchesSearch = bookmark.title?.toLowerCase().includes(search.toLowerCase());
+    const matchesCategory = selectedCategory === "All Categories" || bookmark.category === selectedCategory;
+
+    return matchesSearch && matchesCategory;
   });
 
   return (
@@ -104,8 +108,20 @@ export default function Home() {
           </div>
 
           <div className="mt-8 border-gray-800 border-1 rounded-md p-1 pl-2 py-2 w-1/5 bg-[#121a25]">
-            <select className="w-full outline-none cursor-pointer">
-              <option>All Categories</option>
+            <select value={selectedCategory} onChange={(event) => setSelectedCategory(event.target.value)} className="w-full outline-none cursor-pointer">
+              <option className="bg-[#121a25] cursor-pointer">All Categories</option>
+              <option className="bg-[#121a25] cursor-pointer">Work</option>
+              <option className="bg-[#121a25] cursor-pointer">Education</option>
+              <option className="bg-[#121a25] cursor-pointer">Technology</option>
+              <option className="bg-[#121a25] cursor-pointer">News</option>
+              <option className="bg-[#121a25] cursor-pointer">Entertainment</option>
+              <option className="bg-[#121a25] cursor-pointer">Shopping</option>
+              <option className="bg-[#121a25] cursor-pointer">Finance</option>
+              <option className="bg-[#121a25] cursor-pointer">Health</option>
+              <option className="bg-[#121a25] cursor-pointer">Travel</option>
+              <option className="bg-[#121a25] cursor-pointer">Social</option>
+              <option className="bg-[#121a25] cursor-pointer">Reference</option>
+              <option className="bg-[#121a25] cursor-pointer">Other</option>
             </select>
           </div>
 
