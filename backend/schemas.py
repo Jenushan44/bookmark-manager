@@ -16,6 +16,7 @@ class BookmarkResponse(BaseModel):
     category: str
     description: str | None
     date: datetime
+    is_favorite: bool
 
     class Config:
         from_attributes = True
@@ -25,3 +26,4 @@ class BookmarkUpdate(BaseModel):
     url: str | None = None 
     category: str | None = None
     description: str | None = None
+    is_favorite: bool | None = None

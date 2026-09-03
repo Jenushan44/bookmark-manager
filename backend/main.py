@@ -27,6 +27,7 @@ def add_bookmark(bookmark: BookmarkCreate):
 
   db.add(new_bookmark)
   db.commit()
+  db.refresh(new_bookmark)
   db.close()
 
   return new_bookmark
@@ -94,6 +95,9 @@ def update_bookmark_by_id(bookmark_id: int, updates: BookmarkUpdate):
 
   if updates.description is not None:
       bookmark.description = updates.description
+
+  if updates.is_favorite is not None:
+    bookmark.is_favorite = updates.is_favorite
 
   db.commit()
   db.refresh(bookmark)

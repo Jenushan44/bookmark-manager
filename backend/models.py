@@ -1,6 +1,6 @@
 # Defines what the database tables should look like
 
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Boolean
 from datetime import datetime
 from database import Base
 
@@ -12,3 +12,4 @@ class Bookmark(Base):
   date = Column(DateTime, default=datetime.utcnow)
   category = Column(String, default="Other", nullable=False)
   description = Column(String, nullable=True)
+  is_favorite = Column(Boolean, default=False)
