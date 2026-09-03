@@ -1,4 +1,4 @@
-import { House, Bookmark, ListSortAscending, Code2, ShieldCheck, GraduationCap, BriefcaseBusiness, Film, Folder, Plus } from "lucide-react";
+import { House, Star, Clock, Bookmark, ListSortAscending, Code2, ShieldCheck, GraduationCap, BriefcaseBusiness, Film, Folder, Plus } from "lucide-react";
 
 export default function Navbar() {
   return (
@@ -23,14 +23,30 @@ export default function Navbar() {
         <p className="ml-auto w-7 h-7 flex items-center justify-center rounded-full border border-gray-700 group-hover:border-gray-500 border-1 text-gray-500 group-hover:text-[#e0d3f3] text-[#c8b8e8] group-hover:bg-[#252a48] transition-all duration-300">0</p>
       </button>
 
+      <div className="flex items-center justify-between mt-8 px-4">
+        <p className="text-xs font-semibold text-gray-500">QUICK VIEWS</p>
+
+        <button className="text-gray-500 hover:text-[#9a9cff] transition-colors duration-300">
+          <Plus size={18} />
+        </button>
+      </div>
+
       <button className="group cursor-pointer flex items-center w-full gap-4 mt-2 px-4 py-3 rounded-lg hover:bg-[#1c2038] transition-all duration-300">
-        <ListSortAscending size={20} className="text-gray-500 group-hover:text-[#9a9cff] transition-colors duration-300" />
-        <p className="text-gray-400 group-hover:text-[#d8d8e8] transition-colors duration-300">Uncategorized</p>
+        <Star size={20} className="text-gray-500 group-hover:text-[#9a9cff] transition-colors duration-300" />
+        <p className="text-gray-400 group-hover:text-[#d8d8e8] transition-colors duration-300">Favourites</p>
         <p className="ml-auto w-7 h-7 flex items-center justify-center rounded-full border border-gray-700 group-hover:border-gray-500 border-1 text-gray-500 group-hover:text-[#e0d3f3] text-[#c8b8e8] group-hover:bg-[#252a48] transition-all duration-300">0</p>
       </button>
 
+      <button className="group cursor-pointer flex items-center w-full gap-4 mt-2 px-4 py-3 rounded-lg hover:bg-[#1c2038] transition-all duration-300">
+        <Clock size={20} className="text-gray-500 group-hover:text-[#9a9cff] transition-colors duration-300" />
+        <p className="text-gray-400 group-hover:text-[#d8d8e8] transition-colors duration-300">Recently Added</p>
+        <p className="ml-auto w-7 h-7 flex items-center justify-center rounded-full border border-gray-700 group-hover:border-gray-500 border-1 text-gray-500 group-hover:text-[#e0d3f3] text-[#c8b8e8] group-hover:bg-[#252a48] transition-all duration-300">0</p>
+      </button>
+
+
+
       <div className="flex items-center justify-between mt-8 px-4">
-        <p className="text-xs font-semibold text-gray-500">CATEGORIES</p>
+        <p className="text-xs font-semibold text-gray-500">LIBRARY</p>
 
         <button className="text-gray-500 hover:text-[#9a9cff] transition-colors duration-300">
           <Plus size={18} />
@@ -38,41 +54,16 @@ export default function Navbar() {
       </div>
 
       <button className="group flex cursor-pointer items-center w-full gap-4 mt-3 px-4 py-3 rounded-lg hover:bg-[#1c2038] transition-all duration-300">
-        <Code2 size={19} className="text-gray-500 group-hover:text-[#9a9cff] transition-colors duration-300" />
-        <p className="text-gray-400 group-hover:text-white transition-colors duration-300">Development</p>
+        <ListSortAscending size={19} className="text-gray-500 group-hover:text-[#9a9cff] transition-colors duration-300" />
+        <p className="text-gray-400 group-hover:text-white transition-colors duration-300">Categorized</p>
         <p className="ml-auto w-7 h-7 flex items-center justify-center rounded-full border border-gray-700 group-hover:border-gray-500 border-1 text-gray-500 group-hover:text-[#e0d3f3] text-[#c8b8e8] group-hover:bg-[#252a48] transition-all duration-300">0</p>
       </button>
 
       <button className="group flex items-center cursor-pointer w-full gap-4 px-4 py-3 rounded-lg hover:bg-[#1c2038] transition-all duration-300">
-        <ShieldCheck size={19} className="text-gray-500 group-hover:text-[#9a9cff] transition-colors duration-300" />
-        <p className="text-gray-400 group-hover:text-white transition-colors duration-300">Cybersecurity</p>
+        <ListSortAscending size={19} className="text-gray-500 group-hover:text-[#9a9cff] transition-colors duration-300" />
+        <p className="text-gray-400 group-hover:text-white transition-colors duration-300">Uncategorized</p>
         <p className="ml-auto w-7 h-7 flex items-center justify-center rounded-full border border-gray-700 group-hover:border-gray-500 border-1 text-gray-500 group-hover:text-[#e0d3f3] text-[#c8b8e8] group-hover:bg-[#252a48] transition-all duration-300">0</p>
       </button>
-
-      <button className="group flex items-center w-full cursor-pointer gap-4 px-4 py-3 rounded-lg hover:bg-[#1c2038] transition-all duration-300">
-        <GraduationCap size={19} className="text-gray-500 group-hover:text-[#9a9cff] transition-colors duration-300" />
-        <p className="text-gray-400 group-hover:text-white transition-colors duration-300">School</p>
-        <p className="ml-auto w-7 h-7 flex items-center justify-center rounded-full border border-gray-700 group-hover:border-gray-500 border-1 text-gray-500 group-hover:text-[#e0d3f3] text-[#c8b8e8] group-hover:bg-[#252a48] transition-all duration-300">0</p>
-      </button>
-
-      <button className="group flex items-center w-full gap-4 cursor-pointer px-4 py-3 rounded-lg hover:bg-[#1c2038] transition-all duration-300">
-        <BriefcaseBusiness size={19} className="text-gray-500 group-hover:text-[#9a9cff] transition-colors duration-300" />
-        <p className="text-gray-400 group-hover:text-white transition-colors duration-300">Productivity</p>
-        <p className="ml-auto w-7 h-7 flex items-center justify-center rounded-full border border-gray-700 group-hover:border-gray-500 border-1 text-gray-500 group-hover:text-[#e0d3f3] text-[#c8b8e8] group-hover:bg-[#252a48] transition-all duration-300">0</p>
-      </button>
-
-      <button className="group flex items-center w-full gap-4 px-4 cursor-pointer py-3 rounded-lg hover:bg-[#1c2038] transition-all duration-300">
-        <Film size={19} className="text-gray-500 group-hover:text-[#9a9cff] transition-colors duration-300" />
-        <p className="text-gray-400 group-hover:text-white transition-colors duration-300">Entertainment</p>
-        <p className="ml-auto w-7 h-7 flex items-center justify-center rounded-full border border-gray-700 group-hover:border-gray-500 border-1 text-gray-500 group-hover:text-[#e0d3f3] text-[#c8b8e8] group-hover:bg-[#252a48] transition-all duration-300">0</p>
-      </button>
-
-      <button className="group flex items-center cursor-pointer w-full gap-4 px-4 py-3 rounded-lg hover:bg-[#1c2038] transition-all duration-300">
-        <Folder size={19} className="text-gray-500 group-hover:text-[#9a9cff] transition-colors duration-300" />
-        <p className="text-gray-400 group-hover:text-white transition-colors duration-300">Other</p>
-        <p className="ml-auto w-7 h-7 flex items-center justify-center rounded-full border border-gray-700 group-hover:border-gray-500 border-1 text-gray-500 group-hover:text-[#e0d3f3] text-[#c8b8e8] group-hover:bg-[#252a48] transition-all duration-300">0</p>
-      </button>
-
     </div>
   );
 }
