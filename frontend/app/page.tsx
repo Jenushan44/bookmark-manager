@@ -126,7 +126,7 @@ export default function Home() {
           </div>
 
           <div className="ml-auto flex items-center mt-8">
-            <p className="text-gray-400 font-semibold">0 bookmarks</p>
+            <p className="text-gray-400 font-semibold">{filteredBookmarks.length == 1 ? "1 bookmark" : `${filteredBookmarks.length} bookmarks`}</p>
           </div>
 
         </div>
