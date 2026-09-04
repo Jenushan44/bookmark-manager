@@ -11,6 +11,7 @@ type BookmarkType = {
   category: string;
   description: string | null;
   is_favorite: boolean;
+  date: string;
 };
 
 export default function Home() {
@@ -109,6 +110,17 @@ export default function Home() {
       .then((updatedBookmark) => { setBookmarks(bookmarks.map((currentBookmark) => currentBookmark.id === bookmark.id ? updatedBookmark : currentBookmark)); });
   };
 
+  const recentBookmarks = bookmarks.filter((bookmark) => {
+    const bookmarkDate = new Date(bookmark.date);
+    const sevenDaysAgo = new Date();
+
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    return bookmarkDate >= sevenDaysAgo;
+
+
+  });
+
   return (
     <div className="flex min-h-screen bg-[#0f1621]">
       <Navbar showAllBookmarks={() => setSelectedCategory("All Categories")} bookmarkCount={bookmarks.length} showUncategorizedBookmarks={() => setSelectedCategory("Other")} showCategorizedBookmarks={() => setSelectedCategory("Categorized")} />
@@ -153,10 +165,21 @@ export default function Home() {
 
         </div>
 
-        <div className="mt-5">
-          <p className="font-semibold">Favourites</p>
-          <div className="flex gap-4 mt-5">
+        <div className="mt-5 bg-[#04070a]">
+          <p className="font-semibold  ml-2 pt-3">Favourites</p>
+          <div className="flex gap-4 mt-5 px-2 pb-5">
             {favouriteBookmarks.map((bookmark) => (
+              <div key={bookmark.id}>
+                <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} deleteBookmark={deleteBookmark} openEditModal={() => openEditModal(bookmark)} openInfoModal={() => openInfoModal(bookmark)} toggleFavourite={() => toggleFavourite(bookmark)} isFavourite={favouriteBookmarks.some((favourite) => favourite.id === bookmark.id)} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-5 bg-[#04070a]">
+          <p className="font-semibold  ml-2 pt-3">Recently Added</p>
+          <div className="flex gap-4 mt-5 px-2 pb-5">
+            {recentBookmarks.map((bookmark) => (
               <div key={bookmark.id}>
                 <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} deleteBookmark={deleteBookmark} openEditModal={() => openEditModal(bookmark)} openInfoModal={() => openInfoModal(bookmark)} toggleFavourite={() => toggleFavourite(bookmark)} isFavourite={favouriteBookmarks.some((favourite) => favourite.id === bookmark.id)} />
               </div>
