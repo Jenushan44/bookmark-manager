@@ -122,18 +122,9 @@ export default function Home() {
   });
 
   return (
-    <div className="flex min-h-screen bg-[#0f1621]">
-      <Navbar showAllBookmarks={() => setSelectedCategory("All Categories")} bookmarkCount={bookmarks.length} showUncategorizedBookmarks={() => setSelectedCategory("Other")} showCategorizedBookmarks={() => setSelectedCategory("Categorized")} />
-      <div className="flex-1 p-8 bg-[#090f18]">
-
-        <div className="flex">
-          <div className="max-w-5xl">
-            <p className="flex text-3xl font-semibold items-center gap-2"><Bookmark className="fill-[#5c50dc]" color="#5c50dc" size={45} />Bookmark Manager</p>
-            <p className="mt-2 ml-14 text-gray-600">Save and organize useful links.</p>
-          </div>
-
-          <button onClick={() => setIsAddOpen(true)} className="ml-auto flex items-center gap-2 rounded-md border border-[#5e54e0] bg-[#5e54e0] px-4 py-2 h-[50px] cursor-pointer"><Plus />Add Bookmark</button>
-        </div>
+    <div className=" bg-[#0f1621]">
+      <Navbar openAddModal={() => setIsAddOpen(true)} />
+      <div className="flex-1 px-5 bg-[#090f18]">
 
         <div className="flex items-center gap-5">
           <div className="mt-8 flex items-center border-1 rounded-md border-gray-800 p-1 pl-2 py-2 w-1/3 gap-2">
