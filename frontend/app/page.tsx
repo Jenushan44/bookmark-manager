@@ -232,7 +232,7 @@ export default function Home() {
 
         </div>
 
-        <div className="mt-5 border-2 border-gray-800 rounded-md bg-[#0f1822]">
+        <div className="mt-5 border-2 border-gray-800 rounded-md bg-[#0f1822] min-h-[150px]">
           <div className="flex justify-between">
             <p className="font-semibold flex gap-1 items-center ml-2 pt-3 text-xl"><Star className="text-yellow-400 fill-yellow-400" />Favourites</p>
             <button onClick={() => setShowAllFavourites(!showAllFavourites)} className="transition-all duration-800 flex mt-3 mr-2">{showAllFavourites ? (<p className="flex gap-1 font-semibold text-[#b7b2f1] cursor-pointer">Show Less <ChevronUp className="transition-transform duration-300" /></p>) : (<p className="flex gap-1 font-semibold text-[#b7b2f1] cursor-pointer">Show All <ChevronDown className="transition-transform duration-300" /></p>)}</button>
@@ -246,7 +246,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-5 border-2 border-gray-800 rounded-md bg-[#0f1822]">
+        <div className="mt-5 border-2 border-gray-800 rounded-md bg-[#0f1822] min-h-[150px]">
           <div className="flex justify-between">
             <p className="font-semibold flex gap-1 items-center ml-2 pt-3 text-xl"><Clock className="text-black fill-[#6586f9]" size={30} />Recently Added</p>
             <button onClick={() => setShowAllRecents(!showAllRecents)} className="transition-all duration-800 flex mt-3 mr-2">{showAllRecents ? (<p className="flex gap-1 font-semibold text-[#b7b2f1] cursor-pointer">Show Less <ChevronUp className="transition-transform duration-300" /></p>) : (<p className="flex gap-1 font-semibold text-[#b7b2f1] cursor-pointer">Show All <ChevronDown className="transition-transform duration-300" /></p>)}</button>
@@ -260,7 +260,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-5 border-2 border-gray-800 rounded-md bg-[#0f1822]">
+        <div className="mt-5 border-2 border-gray-800 rounded-md bg-[#0f1822] min-h-[160px]">
           <div className="flex items-center justify-between">
             <p className="font-semibold flex gap-1 items-center ml-2 pt-3 text-xl"><BookMarked className="text-black fill-[#6586f9]" size={30} />All Bookmarks</p>
 
