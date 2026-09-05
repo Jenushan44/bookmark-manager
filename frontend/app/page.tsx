@@ -1,5 +1,5 @@
 "use client"
-import { Bookmark, Search, Plus, Info, Pencil, Trash2 } from "lucide-react"
+import { Bookmark, Search, Plus, Info, Star, Pencil, Trash2, Clock, BookMarked, ChevronUp, ChevronDown } from "lucide-react"
 import Navbar from "../components/Navbar"
 import BookmarkCard from "../components/BookmarkCard"
 import { useState, useEffect } from 'react';
@@ -32,6 +32,7 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
 
   const favouriteBookmarks = bookmarks.filter((bookmark) => bookmark.is_favorite);
+  const [showAllFavourites, setShowAllFavourites] = useState(false);
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/bookmarks")
@@ -107,7 +108,7 @@ export default function Home() {
       body: JSON.stringify({ is_favorite: !bookmark.is_favorite, }),
     })
       .then((response) => response.json())
-      .then((updatedBookmark) => { setBookmarks(bookmarks.map((currentBookmark) => currentBookmark.id === bookmark.id ? updatedBookmark : currentBookmark)); });
+      .then((updatedBookmark) => { setBookmarks(bookmarks.map((currentBookmark) => currentBookmark.id === bookmark.id ? updatedBookmark : currentBookmark)); setSelectedBookmark(updatedBookmark) });
   };
 
   const recentBookmarks = bookmarks.filter((bookmark) => {
@@ -121,10 +122,12 @@ export default function Home() {
 
   });
 
+  const displayedFavourites = showAllFavourites ? favouriteBookmarks : favouriteBookmarks.slice(0, 4);
+
   return (
     <div className=" bg-[#0f1621]">
       <Navbar openAddModal={() => setIsAddOpen(true)} />
-      <div className="flex-1 px-5 bg-[#090f18]">
+      <div className="flex-1 px-5 bg-[#09121a]">
 
         <div className="flex items-center gap-5">
           <div className="mt-8 flex items-center border-1 rounded-md border-gray-800 p-1 pl-2 py-2 w-1/3 gap-2">
@@ -156,10 +159,13 @@ export default function Home() {
 
         </div>
 
-        <div className="mt-5 bg-[#04070a]">
-          <p className="font-semibold  ml-2 pt-3">Favourites</p>
-          <div className="flex gap-4 mt-5 px-2 pb-5">
-            {favouriteBookmarks.map((bookmark) => (
+        <div className="mt-5 border-2 border-gray-800 rounded-md bg-[#0f1822]">
+          <div className="flex justify-between">
+            <p className="font-semibold flex gap-1 items-center ml-2 pt-3 text-xl"><Star className="text-yellow-400 fill-yellow-400" />Favourites</p>
+            <button onClick={() => setShowAllFavourites(!showAllFavourites)} className="transition-all duration-800 flex mt-3 mr-2">{showAllFavourites ? (<p className="flex gap-1 font-semibold text-[#b7b2f1] cursor-pointer">Show Less <ChevronUp className="transition-transform duration-300" /></p>) : (<p className="flex gap-1 font-semibold text-[#b7b2f1] cursor-pointer">Show All <ChevronDown className="transition-transform duration-300" /></p>)}</button>
+          </div>
+          <div className="flex flex-wrap gap-4 mt-5 px-2 pb-5">
+            {displayedFavourites.map((bookmark) => (
               <div key={bookmark.id}>
                 <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} deleteBookmark={deleteBookmark} openEditModal={() => openEditModal(bookmark)} openInfoModal={() => openInfoModal(bookmark)} toggleFavourite={() => toggleFavourite(bookmark)} isFavourite={favouriteBookmarks.some((favourite) => favourite.id === bookmark.id)} />
               </div>
@@ -167,9 +173,9 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-5 bg-[#04070a]">
-          <p className="font-semibold  ml-2 pt-3">Recently Added</p>
-          <div className="flex gap-4 mt-5 px-2 pb-5">
+        <div className="mt-5 border-2 border-gray-800 rounded-md bg-[#0f1822]">
+          <p className="font-semibold flex gap-1 items-center ml-2 pt-3 text-xl"><Clock className="text-black fill-[#6586f9]" size={30} />Recently Added</p>
+          <div className="flex flex-wrap gap-4 mt-5 px-2 pb-5">
             {recentBookmarks.map((bookmark) => (
               <div key={bookmark.id}>
                 <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} deleteBookmark={deleteBookmark} openEditModal={() => openEditModal(bookmark)} openInfoModal={() => openInfoModal(bookmark)} toggleFavourite={() => toggleFavourite(bookmark)} isFavourite={favouriteBookmarks.some((favourite) => favourite.id === bookmark.id)} />
@@ -178,12 +184,16 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex gap-4 mt-5">
-          {filteredBookmarks.map((bookmark) => (
-            <div key={bookmark.id}>
-              <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} deleteBookmark={deleteBookmark} openEditModal={() => openEditModal(bookmark)} openInfoModal={() => openInfoModal(bookmark)} toggleFavourite={() => toggleFavourite(bookmark)} isFavourite={favouriteBookmarks.some((favourite) => favourite.id === bookmark.id)} />
-            </div>
-          ))}
+        <div className="mt-5 border-2 border-gray-800 rounded-md bg-[#0f1822]">
+          <p className="font-semibold flex gap-1 items-center ml-2 pt-3 text-xl"><BookMarked className="text-black fill-[#6586f9]" size={30} />All Bookmarks</p>
+          <div className="flex flex-wrap gap-4 mt-5 px-2 pb-5">
+
+            {filteredBookmarks.map((bookmark) => (
+              <div key={bookmark.id}>
+                <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} deleteBookmark={deleteBookmark} openEditModal={() => openEditModal(bookmark)} openInfoModal={() => openInfoModal(bookmark)} toggleFavourite={() => toggleFavourite(bookmark)} isFavourite={favouriteBookmarks.some((favourite) => favourite.id === bookmark.id)} />
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       {isAddOpen && (
@@ -299,9 +309,12 @@ export default function Home() {
       )}
 
       {isInfoOpen && selectedBookmark && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
+        <div className="z-100 fixed inset-0 bg-black/60 flex items-center justify-center">
           <div className="bg-[#121a25] border border-gray-700 rounded-lg p-6 w-[400px] flex flex-col">
-            <p className="text-xl font-semibold">Info Bookmark</p>
+            <div className="flex items-center justify-between">
+              <p className="text-xl font-semibold">Info Bookmark</p>
+              <button onClick={() => toggleFavourite(selectedBookmark)} className="z-50 text-gray-400 cursor-pointer hover:text-blue-500 transition-colors hover:scale-105 hover:shadow-xl"><Star className={selectedBookmark.is_favorite ? "text-yellow-400 fill-yellow-400" : "text-gray-500"} size={20} /></button>
+            </div>
             <hr className="mt-1" />
             <div className="flex items-center gap-4 mt-5">
               <img src={`https://www.google.com/s2/favicons?domain=${new URL(selectedBookmark.url).hostname}&sz=64`} className="w-12 h-12" />
