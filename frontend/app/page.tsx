@@ -2,7 +2,7 @@
 import { Bookmark, Search, Plus, Info, Star, Pencil, Trash2, Clock, BookMarked, ChevronUp, ChevronDown } from "lucide-react"
 import Navbar from "../components/Navbar"
 import BookmarkCard from "../components/BookmarkCard"
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 type BookmarkType = {
   id: number;
@@ -33,12 +33,68 @@ export default function Home() {
 
   const favouriteBookmarks = bookmarks.filter((bookmark) => bookmark.is_favorite);
   const [showAllFavourites, setShowAllFavourites] = useState(false);
+  const [showAllRecents, setShowAllRecents] = useState(false);
+
+
+  const favouritesContainerRef = useRef<HTMLDivElement>(null);
+  const recentsContainerRef = useRef<HTMLDivElement>(null);
+
+  const [visibleFavourites, setVisibleFavourites] = useState(4);
+  const [visibleRecents, setVisibleRecents] = useState(4);
+
 
   useEffect(() => {
     fetch("http://127.0.0.1:8000/bookmarks")
       .then((response) => response.json())
       .then((data) => setBookmarks(data));
   }, []);
+
+  useEffect(() => {
+    const calculateVisibleFavourites = () => {
+
+      if (!favouritesContainerRef.current) {
+        return;
+
+      }
+
+      const containerWidth = favouritesContainerRef.current.offsetWidth;
+
+      const cardWidth = 220;
+      const gap = 16;
+
+      const cardsThatFit = Math.floor(containerWidth / (cardWidth + gap));
+
+      setVisibleFavourites(cardsThatFit);
+    };
+
+    calculateVisibleFavourites();
+    window.addEventListener("resize", calculateVisibleFavourites);
+    return () => { window.removeEventListener("resize", calculateVisibleFavourites); };
+  }, []);
+
+  useEffect(() => {
+    const calculateVisibleRecents = () => {
+
+      if (!recentsContainerRef.current) {
+        return;
+
+      }
+
+      const containerWidth = recentsContainerRef.current.offsetWidth;
+
+      const cardWidth = 220;
+      const gap = 16;
+
+      const cardsThatFit = Math.floor(containerWidth / (cardWidth + gap));
+
+      setVisibleRecents(cardsThatFit);
+    };
+
+    calculateVisibleRecents();
+    window.addEventListener("resize", calculateVisibleRecents);
+    return () => { window.removeEventListener("resize", calculateVisibleRecents); };
+  }, []);
+
 
   const addBookmark = () => {
     fetch("http://127.0.0.1:8000/bookmarks", {
@@ -122,7 +178,24 @@ export default function Home() {
 
   });
 
-  const displayedFavourites = showAllFavourites ? favouriteBookmarks : favouriteBookmarks.slice(0, 4);
+  const displayedFavourites = showAllFavourites ? favouriteBookmarks : favouriteBookmarks.slice(0, visibleFavourites);
+  const displayedRecents = showAllRecents ? recentBookmarks : recentBookmarks.slice(0, visibleRecents);
+
+
+  const [sortOption, setSortOption] = useState("A-Z");
+  let sortedBookmarks = [...filteredBookmarks];
+
+  if (sortOption === "Newest First") {
+    sortedBookmarks.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  } else if (sortOption === "Oldest First") {
+    sortedBookmarks.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  } else if (sortOption === "A-Z") {
+
+    sortedBookmarks.sort((a, b) => (a.title || "").localeCompare(b.title || ""));
+  } else if (sortOption === "Z-A") {
+    sortedBookmarks.sort((a, b) => (b.title || "").localeCompare(a.title || ""));
+
+  }
 
   return (
     <div className=" bg-[#0f1621]">
@@ -164,7 +237,7 @@ export default function Home() {
             <p className="font-semibold flex gap-1 items-center ml-2 pt-3 text-xl"><Star className="text-yellow-400 fill-yellow-400" />Favourites</p>
             <button onClick={() => setShowAllFavourites(!showAllFavourites)} className="transition-all duration-800 flex mt-3 mr-2">{showAllFavourites ? (<p className="flex gap-1 font-semibold text-[#b7b2f1] cursor-pointer">Show Less <ChevronUp className="transition-transform duration-300" /></p>) : (<p className="flex gap-1 font-semibold text-[#b7b2f1] cursor-pointer">Show All <ChevronDown className="transition-transform duration-300" /></p>)}</button>
           </div>
-          <div className="flex flex-wrap gap-4 mt-5 px-2 pb-5">
+          <div className="flex flex-wrap gap-4 mt-5 px-2 pb-5" ref={favouritesContainerRef}>
             {displayedFavourites.map((bookmark) => (
               <div key={bookmark.id}>
                 <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} deleteBookmark={deleteBookmark} openEditModal={() => openEditModal(bookmark)} openInfoModal={() => openInfoModal(bookmark)} toggleFavourite={() => toggleFavourite(bookmark)} isFavourite={favouriteBookmarks.some((favourite) => favourite.id === bookmark.id)} />
@@ -174,9 +247,12 @@ export default function Home() {
         </div>
 
         <div className="mt-5 border-2 border-gray-800 rounded-md bg-[#0f1822]">
-          <p className="font-semibold flex gap-1 items-center ml-2 pt-3 text-xl"><Clock className="text-black fill-[#6586f9]" size={30} />Recently Added</p>
-          <div className="flex flex-wrap gap-4 mt-5 px-2 pb-5">
-            {recentBookmarks.map((bookmark) => (
+          <div className="flex justify-between">
+            <p className="font-semibold flex gap-1 items-center ml-2 pt-3 text-xl"><Clock className="text-black fill-[#6586f9]" size={30} />Recently Added</p>
+            <button onClick={() => setShowAllRecents(!showAllRecents)} className="transition-all duration-800 flex mt-3 mr-2">{showAllRecents ? (<p className="flex gap-1 font-semibold text-[#b7b2f1] cursor-pointer">Show Less <ChevronUp className="transition-transform duration-300" /></p>) : (<p className="flex gap-1 font-semibold text-[#b7b2f1] cursor-pointer">Show All <ChevronDown className="transition-transform duration-300" /></p>)}</button>
+          </div>
+          <div className="flex flex-wrap gap-4 mt-5 px-2 pb-5" ref={recentsContainerRef}>
+            {displayedRecents.map((bookmark) => (
               <div key={bookmark.id}>
                 <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} deleteBookmark={deleteBookmark} openEditModal={() => openEditModal(bookmark)} openInfoModal={() => openInfoModal(bookmark)} toggleFavourite={() => toggleFavourite(bookmark)} isFavourite={favouriteBookmarks.some((favourite) => favourite.id === bookmark.id)} />
               </div>
@@ -185,10 +261,23 @@ export default function Home() {
         </div>
 
         <div className="mt-5 border-2 border-gray-800 rounded-md bg-[#0f1822]">
-          <p className="font-semibold flex gap-1 items-center ml-2 pt-3 text-xl"><BookMarked className="text-black fill-[#6586f9]" size={30} />All Bookmarks</p>
+          <div className="flex items-center justify-between">
+            <p className="font-semibold flex gap-1 items-center ml-2 pt-3 text-xl"><BookMarked className="text-black fill-[#6586f9]" size={30} />All Bookmarks</p>
+
+            <div className="mt-5 mr-5 flex items-center gap-2">
+              <p className="text-md text-gray-400">Sort by:</p>
+              <select value={sortOption} onChange={(event) => setSortOption(event.target.value)} className="outline-none mr-5 cursor-pointer border-gray-800 border-1 rounded-md p-1 pl-2 py-2 w-[150px] bg-[#15202b]">
+                <option>A-Z</option>
+                <option>Z-A</option>
+                <option>Newest First</option>
+                <option>Oldest First</option>
+              </select>
+
+            </div>
+          </div>
           <div className="flex flex-wrap gap-4 mt-5 px-2 pb-5">
 
-            {filteredBookmarks.map((bookmark) => (
+            {sortedBookmarks.map((bookmark) => (
               <div key={bookmark.id}>
                 <BookmarkCard id={bookmark.id} title={bookmark.title} url={bookmark.url} category={bookmark.category} description={bookmark.description} deleteBookmark={deleteBookmark} openEditModal={() => openEditModal(bookmark)} openInfoModal={() => openInfoModal(bookmark)} toggleFavourite={() => toggleFavourite(bookmark)} isFavourite={favouriteBookmarks.some((favourite) => favourite.id === bookmark.id)} />
               </div>
