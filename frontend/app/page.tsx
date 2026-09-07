@@ -102,7 +102,7 @@ export default function Home() {
     if (!user) return;
 
     user.getIdToken().then((token) => {
-      fetch("http://127.0.0.1:8000/bookmarks", {
+      fetch("https://bookmark-manager-p7pm.onrender.com/bookmarks", {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
         body: JSON.stringify({ title: title || null, url: url, category: category, description: description || null, }),
@@ -117,7 +117,7 @@ export default function Home() {
     if (!user) return;
 
     user.getIdToken().then((token) => {
-      fetch(`http://127.0.0.1:8000/bookmarks/${id}`, {
+      fetch(`https://bookmark-manager-p7pm.onrender.com/bookmarks/${id}`, {
         method: "DELETE", headers: { Authorization: `Bearer ${token}` },
       }).then(() => { setBookmarks(bookmarks.filter((bookmark) => bookmark.id !== id)); });
     });
@@ -137,7 +137,7 @@ export default function Home() {
     if (!user) return;
 
     user.getIdToken().then((token) => {
-      fetch(`http://127.0.0.1:8000/bookmarks/${id}`, {
+      fetch(`https://bookmark-manager-p7pm.onrender.com/bookmarks/${id}`, {
         method: "PATCH", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ title: title || null, url: url, category: category, description: description || null, }),
       })
@@ -191,7 +191,7 @@ export default function Home() {
     }
 
     user.getIdToken().then((token) => {
-      fetch("http://127.0.0.1:8000/bookmarks", {
+      fetch("https://bookmark-manager-p7pm.onrender.com/bookmarks", {
         headers: { Authorization: `Bearer ${token}` },
       })
         .then((response) => response.json())
@@ -207,7 +207,7 @@ export default function Home() {
     if (!user) return;
 
     user.getIdToken().then((token) => {
-      fetch(`http://127.0.0.1:8000/bookmarks/${bookmark.id}`, {
+      fetch(`https://bookmark-manager-p7pm.onrender.com/bookmarks/${bookmark.id}`, {
         method: "PATCH", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
         body: JSON.stringify({ is_favorite: !bookmark.is_favorite }),
       })
