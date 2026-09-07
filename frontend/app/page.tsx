@@ -339,7 +339,7 @@ export default function Home() {
         </div>
       </div>
       {isAddOpen && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
+        <div className="fixed z-50 inset-0 bg-black/60 flex items-center justify-center">
           <div className="bg-[#121a25] border border-gray-700 rounded-lg p-6 w-[400px] flex flex-col">
             <p className="text-xl font-semibold">Add Bookmark</p>
             <hr className="mt-1" />
@@ -388,7 +388,7 @@ export default function Home() {
       )}
 
       {isEditOpen && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center">
+        <div className="fixed z-50 inset-0 bg-black/60 flex items-center justify-center">
           <div className="bg-[#121a25] border border-gray-700 rounded-lg p-6 w-[400px] flex flex-col">
 
             <p className="text-xl font-semibold">Edit Bookmark</p>
