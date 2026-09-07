@@ -13,3 +13,4 @@ class Bookmark(Base):
   category = Column(String, default="Other", nullable=False)
   description = Column(String, nullable=True)
   is_favorite = Column(Boolean, default=False)
+  user_id = Column(String, nullable=False, index=True)

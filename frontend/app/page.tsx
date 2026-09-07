@@ -3,6 +3,9 @@ import { Bookmark, Search, Plus, Info, Star, Pencil, Trash2, Clock, BookMarked, 
 import Navbar from "../components/Navbar"
 import BookmarkCard from "../components/BookmarkCard"
 import { useState, useEffect, useRef } from 'react';
+import { onAuthStateChanged, signOut, User } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import { auth } from "@/lib/firebase";
 
 type BookmarkType = {
   id: number;
@@ -42,12 +45,11 @@ export default function Home() {
   const [visibleFavourites, setVisibleFavourites] = useState(4);
   const [visibleRecents, setVisibleRecents] = useState(4);
 
+  const router = useRouter();
 
-  useEffect(() => {
-    fetch("http://127.0.0.1:8000/bookmarks")
-      .then((response) => response.json())
-      .then((data) => setBookmarks(data));
-  }, []);
+  const [user, setUser] = useState<User | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
 
   useEffect(() => {
     const calculateVisibleFavourites = () => {
@@ -97,18 +99,28 @@ export default function Home() {
 
 
   const addBookmark = () => {
-    fetch("http://127.0.0.1:8000/bookmarks", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", },
-      body: JSON.stringify({ title: title || null, url: url, category: category, description: description || null, }),
-    })
-      .then((response) => response.json())
-      .then((newBookmark) => { setBookmarks([...bookmarks, newBookmark]); setTitle(""); setUrl(""); setCategory("Work"); setDescription(""); setIsAddOpen(false); });
+    if (!user) return;
+
+    user.getIdToken().then((token) => {
+      fetch("http://127.0.0.1:8000/bookmarks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
+        body: JSON.stringify({ title: title || null, url: url, category: category, description: description || null, }),
+      })
+        .then((response) => response.json())
+        .then((newBookmark) => { setBookmarks([...bookmarks, newBookmark]); setTitle(""); setUrl(""); setCategory("Work"); setDescription(""); setIsAddOpen(false); });
+    });
   };
 
-
   const deleteBookmark = (id: number) => {
-    fetch(`http://127.0.0.1:8000/bookmarks/${id}`, { method: "DELETE", }).then(() => { setBookmarks(bookmarks.filter((bookmark) => bookmark.id !== id)); });
+
+    if (!user) return;
+
+    user.getIdToken().then((token) => {
+      fetch(`http://127.0.0.1:8000/bookmarks/${id}`, {
+        method: "DELETE", headers: { Authorization: `Bearer ${token}` },
+      }).then(() => { setBookmarks(bookmarks.filter((bookmark) => bookmark.id !== id)); });
+    });
   };
 
   const openEditModal = (bookmark: BookmarkType) => {
@@ -121,18 +133,17 @@ export default function Home() {
   };
 
   const editBookmark = (id: number) => {
-    fetch(`http://127.0.0.1:8000/bookmarks/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json", },
-      body: JSON.stringify({ title: title || null, url: url, category: category, description: description || null, }),
-    })
-      .then((response) => response.json())
-      .then((updatedBookmark) => {
-        setBookmarks(bookmarks.map((bookmark) => bookmark.id === id ? updatedBookmark : bookmark));
 
-        setIsEditOpen(false);
-        setEditingId(null);
-      });
+    if (!user) return;
+
+    user.getIdToken().then((token) => {
+      fetch(`http://127.0.0.1:8000/bookmarks/${id}`, {
+        method: "PATCH", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ title: title || null, url: url, category: category, description: description || null, }),
+      })
+        .then((response) => response.json())
+        .then((updatedBookmark) => { setBookmarks(bookmarks.map((bookmark) => bookmark.id === id ? updatedBookmark : bookmark)); setIsEditOpen(false); setEditingId(null); });
+    });
   };
 
   const openInfoModal = (bookmark: BookmarkType) => {
@@ -158,13 +169,51 @@ export default function Home() {
 
   });
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+
+      if (currentUser) {
+        setUser(currentUser);
+
+      } else {
+        router.push("/login");
+      }
+
+      setAuthLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [router]);
+
+  useEffect(() => {
+    if (!user) {
+      return;
+    }
+
+    user.getIdToken().then((token) => {
+      fetch("http://127.0.0.1:8000/bookmarks", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then((response) => response.json())
+        .then((data) => { setBookmarks(data); });
+    });
+  }, [user]);
+
+  const handleLogout = () => {
+    signOut(auth).then(() => { router.push("/login"); }).catch((error) => { console.error(error); });
+  };
+
   const toggleFavourite = (bookmark: BookmarkType) => {
-    fetch(`http://127.0.0.1:8000/bookmarks/${bookmark.id}`, {
-      method: "PATCH", headers: { "Content-Type": "application/json", },
-      body: JSON.stringify({ is_favorite: !bookmark.is_favorite, }),
-    })
-      .then((response) => response.json())
-      .then((updatedBookmark) => { setBookmarks(bookmarks.map((currentBookmark) => currentBookmark.id === bookmark.id ? updatedBookmark : currentBookmark)); setSelectedBookmark(updatedBookmark) });
+    if (!user) return;
+
+    user.getIdToken().then((token) => {
+      fetch(`http://127.0.0.1:8000/bookmarks/${bookmark.id}`, {
+        method: "PATCH", headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, },
+        body: JSON.stringify({ is_favorite: !bookmark.is_favorite }),
+      })
+        .then((response) => response.json())
+        .then((updatedBookmark) => { setBookmarks(bookmarks.map((currentBookmark) => currentBookmark.id === bookmark.id ? updatedBookmark : currentBookmark)); setSelectedBookmark(updatedBookmark); });
+    });
   };
 
   const recentBookmarks = bookmarks.filter((bookmark) => {
@@ -197,9 +246,13 @@ export default function Home() {
 
   }
 
+  if (authLoading) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className=" bg-[#0f1621]">
-      <Navbar openAddModal={() => setIsAddOpen(true)} />
+      <Navbar openAddModal={() => setIsAddOpen(true)} handleLogout={handleLogout} />
       <div className="flex-1 px-5 bg-[#09121a]">
 
         <div className="flex items-center gap-5">
@@ -262,7 +315,7 @@ export default function Home() {
 
         <div className="mt-5 border-2 border-gray-800 rounded-md bg-[#0f1822] min-h-[160px]">
           <div className="flex items-center justify-between">
-            <p className="font-semibold flex gap-1 items-center ml-2 pt-3 text-xl"><BookMarked className="text-black fill-[#6586f9]" size={30} />All Bookmarks</p>
+            <p className="font-semibold flex gap-1 items-center ml-2 pt-3 text-xl"><Bookmark className="text-black fill-green-400" size={30} />All Bookmarks</p>
 
             <div className="mt-5 mr-5 flex items-center gap-2">
               <p className="text-md text-gray-400">Sort by:</p>

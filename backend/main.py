@@ -1,8 +1,9 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from schemas import BookmarkCreate, BookmarkUpdate
 from models import Bookmark
 from database import SessionLocal, Base, engine
+from firebase_auth import get_current_user
 
 Base.metadata.create_all(bind=engine)
 
@@ -15,7 +16,7 @@ def home():
   return {"message": "/"}
 
 @app.post("/bookmarks")
-def add_bookmark(bookmark: BookmarkCreate): 
+def add_bookmark(bookmark: BookmarkCreate, current_user = Depends(get_current_user)): 
   db = SessionLocal()
 
   new_bookmark = Bookmark(
@@ -23,6 +24,7 @@ def add_bookmark(bookmark: BookmarkCreate):
     url = bookmark.url, 
     category = bookmark.category, 
     description = bookmark.description,
+    user_id = current_user["uid"],
   )
 
   db.add(new_bookmark)
@@ -33,20 +35,20 @@ def add_bookmark(bookmark: BookmarkCreate):
   return new_bookmark
 
 @app.get("/bookmarks")
-def get_bookmarks(): 
+def get_bookmarks(current_user = Depends(get_current_user)): 
   db = SessionLocal()
 
-  bookmarks = db.query(Bookmark).all()
+  bookmarks = db.query(Bookmark).filter(Bookmark.user_id == current_user["uid"]).all()
 
   db.close()
 
   return bookmarks
 
 @app.get("/bookmarks/{bookmark_id}")
-def get_bookmark_by_id(bookmark_id: int): 
+def get_bookmark_by_id(bookmark_id: int, current_user = Depends(get_current_user)):
   db = SessionLocal()
 
-  bookmark = db.query(Bookmark).filter(Bookmark.id == bookmark_id).first()
+  bookmark = db.query(Bookmark).filter(Bookmark.id == bookmark_id, Bookmark.user_id == current_user["uid"]).first()
 
   db.close()
 
@@ -56,10 +58,10 @@ def get_bookmark_by_id(bookmark_id: int):
   return bookmark
 
 @app.delete("/bookmarks/{bookmark_id}")
-def delete_bookmark_by_id(bookmark_id: int): 
+def delete_bookmark_by_id(bookmark_id: int, current_user = Depends(get_current_user)): 
   db = SessionLocal()
 
-  bookmark = db.query(Bookmark).filter(Bookmark.id == bookmark_id).first()
+  bookmark = db.query(Bookmark).filter(Bookmark.id == bookmark_id, Bookmark.user_id == current_user["uid"]).first()
 
   if bookmark == None: 
     db.close()
@@ -75,10 +77,10 @@ def delete_bookmark_by_id(bookmark_id: int):
   return {"message": "Bookmark successfully deleted"}
 
 @app.patch("/bookmarks/{bookmark_id}")
-def update_bookmark_by_id(bookmark_id: int, updates: BookmarkUpdate): 
+def update_bookmark_by_id(bookmark_id: int, updates: BookmarkUpdate, current_user = Depends(get_current_user)): 
   db = SessionLocal()
 
-  bookmark = db.query(Bookmark).filter(Bookmark.id == bookmark_id).first()
+  bookmark = db.query(Bookmark).filter(Bookmark.id == bookmark_id, Bookmark.user_id == current_user["uid"]).first()
 
   if bookmark is None: 
     db.close()
